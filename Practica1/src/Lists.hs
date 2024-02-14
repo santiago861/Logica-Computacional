@@ -25,7 +25,9 @@ instance (Show a) => Show (List a) where
 
 -- | myHead. Función que regresa tal vez la cabeza de la lista.
 myHead :: List a -> Maybe a
-myHead = error "D:"
+myHead Void = Nothing
+myHead (Cons x _) = Just x
+
 -- | myTail. Función que regresa tal vez la cola de la lista.
 myTail :: List a -> Maybe (List a)
 myTail = error "D:"

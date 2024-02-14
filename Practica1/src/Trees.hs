@@ -7,7 +7,7 @@
 - Laboratorio: José Ricardo Desales Santos
 - Practica 1: Recordando Haskell. Árboles
 - Integrantes:
--
+- Reyes Medina Santiago Iván
 -
 -}
 

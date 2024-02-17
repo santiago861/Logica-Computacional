@@ -19,27 +19,36 @@ instance (Show a) => Show (List a) where
   show Void       = "[]"
   show (Cons a l) = "(" ++ (show a) ++ ":" ++ (show l) ++ ")"
 
+
+
+
+
+
+
+
+
+
 --------------------------------------------------------------------------------
 --------                            FUNCIONES                           --------
 --------------------------------------------------------------------------------
 
 -- | myHead. Función que regresa tal vez la cabeza de la lista.
 myHead :: List a -> Maybe a
-myHead Void = Nothing
+myHead Void       = Nothing
 myHead (Cons x _) = Just x
 
 -- | myTail. Función que regresa tal vez la cola de la lista.
 myTail :: List a -> Maybe (List a)
-myTail = error "D:"
+myTail Void       = Nothing
+myTail (Cons _ t) = Just t
 
--- | myLast. Función que regresa tal vez el último elemento de la
--- lista.
+-- | myLast. Función que regresa tal vez el último elemento de la lista.
 myLast :: List a -> Maybe a
-myLast = error "D:"
+myLast = listLast
 
 -- | myLen. Función que regresa la longitud de la lista.
 myLen :: List a -> Int
-myLen = error "D:"
+myLen = listLength
 
 -- | isElem. Función que nos dice si un elemento está en una lista.
 isElem :: (Eq a) => List a -> a -> Bool
@@ -49,19 +58,37 @@ isElem = error "D:"
 myReverse :: List a -> List a
 myReverse = error "D:"
 
--- | toHaskell. Función que pasa una de nuestras listas a las listas
--- de haskell.
+-- | toHaskell. Función que pasa una de nuestras listas a las listas de haskell.
 toHaskell :: List a -> [a]
 toHaskell = error "D:"
 
--- | fromHaskell. Función que pasa una lista de haskell a nuestras
--- listas.
+-- | fromHaskell. Función que pasa una lista de haskell a nuestras listas.
 fromHaskell :: [a] -> List a
 fromHaskell = error "D:"
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------
 --------------------------------------------------------------------------------
+
+-- | función auxiliar para obtener el último elemento de una lista
+listLast :: List a -> Maybe a
+listLast Void          = Nothing
+listLast (Cons x Void) = Just x
+listLast (Cons _ t)    = listLast t
+
+-- | función auxiliar que regresa la lingitud de la lista
+listLength :: List a -> Int
+listLength Void = 0
+listLength (Cons _ t) = 1 + listLength t
+
+
+
+
+
+
+
+
+
 
 --------------------------------------------------------------------------------
 --------                             PRUEBAS                            --------

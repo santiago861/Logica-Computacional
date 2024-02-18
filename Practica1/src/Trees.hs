@@ -23,28 +23,19 @@ data BTree a = Void | Node a (BTree a) (BTree a) deriving (Show, Eq)
 
 -- | Regresa el número de nodos de un árbol.
 nNodes :: BTree a -> Int
-nNodes Void         = 0                       -- caso base en el que el arbol es vacío
-nNodes (Node _ l r) = 1 + nNodes l + nNodes r -- contamos el nodo actual y los nodos del subarbol izquierdo y derecho
+nNodes = arbolNodos
 
 -- | Regresa el número de hojas de un árbol.
 nLeaves :: BTree a -> Int
-nLeaves Void               = 0                     -- el caso en el que el arbol es vacio
-nLeaves (Node _ Void Void) = 1                     -- el caso en el que el arbol sea trivial
-nLeaves (Node _ l r)       = nLeaves l + nLeaves r -- el caso en el que el arbol tiene más de un nodo, contamos las hojas del subarbol izquierdo y derecho
+nLeaves = arbolHojas
 
 -- | Regresa el número de nodos internos de un árbol. nodos que no son ni raiz ni hojas 
 nni :: BTree a -> Int
-nni Void               = 0                  -- el caso en el que el arbol es vacio
-nni (Node _ Void Void) = 0                  -- el caso en el que el nodo al que estamos apuntando es hoja
-nni (Node _ l r)       = 1 + nni l + nni r  -- el caso en el que el nodo al que estamos apuntando tiene al menos un hijo ya sea izquierdo o derecho, es decir, no es hoja
+nni = arbolNodosInternos
 
 -- | Nos dice si un elemento está contenido en un árbol ordenado.
 contains :: (Ord a, Eq a) => a -> BTree a -> Bool
-contains _ Void = False          -- si el arbol es vacio, el elemento no se encuentra
-contains x (Node val l r)
-  | x == val    = True          -- si el elemento es igual al valor en el nodo actual, lo hemos encontrado
-  | x < val     = contains x l  -- si el elemento es menor al valor del nodo actual, buscamos en su subarbol izquierdo
-  | otherwise   = contains x r  -- si el elemento es mayor al valor del nodo actual, buscamos en su subarbol derecho
+contains = arbolContains
 
 -- | Recorrido inorder.
 inorder :: BTree a -> [a]
@@ -59,24 +50,57 @@ preorder (Node val l r) = [val] ++ preorder l ++ preorder r -- recorrido preorde
 -- | Recorrido postorder.
 postorder :: BTree a -> [a]
 postorder Void           = []                                 -- si el arbol es vacio el recorrido inorder es una lista vacia
-postorder (Node val l r) = postorder l ++ postorder r + [val] -- recorrido postorder: subárbol izquierdo + subárbol derecho + nodo actual
+postorder (Node val l r) = postorder l ++ postorder r ++ [val] -- recorrido postorder: subárbol izquierdo + subárbol derecho + nodo actual
 
 -- | Agrega un elemento a un árbol binario de manera ordenada.
 add :: (Ord a) => a -> BTree a -> BTree a
-add x Void   = Node x Void Void     -- si el arbol es vacio creamos un nuevo nodo con el elemento y sin hijos
-add x (Node val l r)
-  | x == val = Node val l r         -- si el elemento ya esta en el arbol no hacemos cambios
-  | x < val  = Node val (add x l) r -- si el elemento es menor al valor del nodo actual, lo agregamos a su subarbol izquierdo 
-  |otherwise = Node val l (add x r) -- si el elemento es mayour al valor del nodo actual, lo agragamos a su subarbol derecho
+add = arbolAdd
 
 -- | Pasa una lista a un árbol binario de forma ordenada.
 fromList :: (Ord a) => [a] -> BTree a -> BTree a
-fromList tree [] = tree -- si la lista es vacia no hacemos cambios en el arbol
-fromList (x:xs) tree = fromList xs (add x tree) -- agregamos el primer elemento de la lista al arbol y llamamos recursivamente a fromList con el resto de la lista
+fromList = arbolFromList
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------
 --------------------------------------------------------------------------------
+
+-- | funcion auxiliar que nos da el numero de nodos de un arbol
+arbolNodos :: BTree a -> Int
+arbolNodos Void         = 0                       -- caso base en el que el arbol es vacío
+arbolNodos (Node _ l r) = 1 + nNodes l + nNodes r -- contamos el nodo actual y los nodos del subarbol izquierdo y derecho
+
+-- | funcion auxiliar que nos da el numero de hojas de un arbol
+arbolHojas :: BTree a -> Int 
+arbolHojas Void               = 0                     -- el caso en el que el arbol es vacio
+arbolHojas (Node _ Void Void) = 1                     -- el caso en el que el arbol sea trivial
+arbolHojas (Node _ l r)       = nLeaves l + nLeaves r -- el caso en el que el arbol tiene más de un nodo, contamos las hojas del subarbol izquierdo y derecho
+
+-- | funcion auxiliar que nos da el numero de nodos internos de un arbol 
+arbolNodosInternos :: BTree a -> Int
+arbolNodosInternos Void               = 0                  -- el caso en el que el arbol es vacio
+arbolNodosInternos (Node _ Void Void) = 0                  -- el caso en el que el nodo al que estamos apuntando es hoja
+arbolNodosInternos (Node _ l r)       = 1 + nni l + nni r  -- el caso en el que el nodo al que estamos apuntando tiene al menos un hijo ya sea izquierdo o derecho, es decir, no es hoja
+
+-- | funcion auxiliar que nos dice si un elemento esta contenido en un arbol binario ordenado
+arbolContains :: (Ord a, Eq a) => a -> BTree a -> Bool
+arbolContains _ Void = False          -- si el arbol es vacio, el elemento no se encuentra
+arbolContains x (Node val l r)
+  | x == val    = True          -- si el elemento es igual al valor en el nodo actual, lo hemos encontrado
+  | x < val     = arbolContains x l  -- si el elemento es menor al valor del nodo actual, buscamos en su subarbol izquierdo
+  | otherwise   = arbolContains x r  -- si el elemento es mayor al valor del nodo actual, buscamos en su subarbol derecho
+
+-- | funcion auxiliar que agrega un elemento a un arbol binario de manera ordenada
+arbolAdd :: (Ord a) => a -> BTree a -> BTree a
+arbolAdd x Void   = Node x Void Void     -- si el arbol es vacio creamos un nuevo nodo con el elemento y sin hijos
+arbolAdd x (Node val l r)
+  | x == val = Node val l r         -- si el elemento ya esta en el arbol no hacemos cambios
+  | x < val  = Node val (arbolAdd x l) r -- si el elemento es menor al valor del nodo actual, lo agregamos a su subarbol izquierdo 
+  |otherwise = Node val l (arbolAdd x r) -- si el elemento es mayour al valor del nodo actual, lo agragamos a su subarbol derecho
+
+-- | funcion auxiliar que pasa una lista a un arbol de manera ordenada
+arbolFromList :: (Ord a) => [a] -> BTree a -> BTree a
+arbolFromList [] tree = tree -- si la lista es vacia no hacemos cambios en el arbol
+arbolFromList (x:xs) tree = arbolFromList xs (add x tree) -- agregamos el primer elemento de la lista al arbol y llamamos recursivamente a fromList con el resto de la lista 
 
 --------------------------------------------------------------------------------
 --------                             PRUEBAS                            --------

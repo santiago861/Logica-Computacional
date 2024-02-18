@@ -23,19 +23,28 @@ data BTree a = Void | Node a (BTree a) (BTree a) deriving (Show, Eq)
 
 -- | Regresa el número de nodos de un árbol.
 nNodes :: BTree a -> Int
-nNodes = error "D:"
+nNodes Void         = 0                       -- caso base en el que el arbol es vacío
+nNodes (Node _ l r) = 1 + nNodes l + nNodes r -- contamos el nodo actual y los nodos del subarbol izquierdo y derecho
 
 -- | Regresa el número de hojas de un árbol.
 nLeaves :: BTree a -> Int
-nLeaves = error "D:"
+nLeaves Void               = 0                     -- el caso en el que el arbol es vacio
+nLeaves (Node _ Void Void) = 1                     -- el caso en el que el arbol sea trivial
+nLeaves (Node _ l r)       = nLeaves l + nLeaves r -- el caso en el que el arbol tiene más de un nodo, contamos las hojas del subarbol izquierdo y derecho
 
--- | Regresa el número de nodos internos de un árbol.
+-- | Regresa el número de nodos internos de un árbol. nodos que no son ni raiz ni hojas 
 nni :: BTree a -> Int
-nni = error "D:"
+nni Void               = 0                  -- el caso en el que el arbol es vacio
+nni (Node _ Void Void) = 0                  -- el caso en el que el nodo al que estamos apuntando es hoja
+nni (Node _ l r)       = 1 + nni l + nni r  -- el caso en el que el nodo al que estamos apuntando tiene al menos un hijo ya sea izquierdo o derecho, es decir, no es hoja
 
 -- | Nos dice si un elemento está contenido en un árbol ordenado.
 contains :: (Ord a, Eq a) => a -> BTree a -> Bool
-contains = error "D:"
+contains _ Void = False          -- si el arbol es vacio, el elemento no se encuentra
+contains x (Node val l r)
+  | x == val    = True          -- si el elemento es igual al valor en el nodo actual, lo hemos encontrado
+  | x < val     = contains x l  -- si el elemento es menor al valor del nodo actual, buscamos en su subarbol izquierdo
+  | otherwise   = contains x r  -- si el elemento es mayor al valor del nodo actual, buscamos en su subarbol derecho
 
 -- | Recorrido inorder.
 inorder :: BTree a -> [a]

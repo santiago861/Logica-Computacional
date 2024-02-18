@@ -48,23 +48,31 @@ contains x (Node val l r)
 
 -- | Recorrido inorder.
 inorder :: BTree a -> [a]
-inorder = error "D:"
+inorder Void           = []                               -- si el arbol es vacio el recorrido inorder es una lista vacia
+inorder (Node val l r) = inorder l ++ [val] ++ inorder r  -- recorrido en orden: subárbol izquierdo + nodo actual + subárbol derecho
 
 -- | Recorrido preorder.
 preorder :: BTree a -> [a]
-preorder = error "D:"
+preorder Void           = []                                -- si el arbol es vacio el recorrido inorder es una lista vacia
+preorder (Node val l r) = [val] ++ preorder l ++ preorder r -- recorrido preorder: nodo actual + subárbol izquierdo + subárbol derecho
 
 -- | Recorrido postorder.
 postorder :: BTree a -> [a]
-postorder = error "D:"
+postorder Void           = []                                 -- si el arbol es vacio el recorrido inorder es una lista vacia
+postorder (Node val l r) = postorder l ++ postorder r + [val] -- recorrido postorder: subárbol izquierdo + subárbol derecho + nodo actual
 
 -- | Agrega un elemento a un árbol binario de manera ordenada.
 add :: (Ord a) => a -> BTree a -> BTree a
-add = error "D:"
+add x Void   = Node x Void Void     -- si el arbol es vacio creamos un nuevo nodo con el elemento y sin hijos
+add x (Node val l r)
+  | x == val = Node val l r         -- si el elemento ya esta en el arbol no hacemos cambios
+  | x < val  = Node val (add x l) r -- si el elemento es menor al valor del nodo actual, lo agregamos a su subarbol izquierdo 
+  |otherwise = Node val l (add x r) -- si el elemento es mayour al valor del nodo actual, lo agragamos a su subarbol derecho
 
 -- | Pasa una lista a un árbol binario de forma ordenada.
 fromList :: (Ord a) => [a] -> BTree a -> BTree a
-fromList = error "D:"
+fromList tree [] = tree -- si la lista es vacia no hacemos cambios en el arbol
+fromList (x:xs) tree = fromList xs (add x tree) -- agregamos el primer elemento de la lista al arbol y llamamos recursivamente a fromList con el resto de la lista
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------

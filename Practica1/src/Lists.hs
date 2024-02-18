@@ -19,15 +19,6 @@ instance (Show a) => Show (List a) where
   show Void       = "[]"
   show (Cons a l) = "(" ++ (show a) ++ ":" ++ (show l) ++ ")"
 
-
-
-
-
-
-
-
-
-
 --------------------------------------------------------------------------------
 --------                            FUNCIONES                           --------
 --------------------------------------------------------------------------------
@@ -98,18 +89,6 @@ listToHaskell (Cons x xs) = x : listToHaskell xs
 listFromHaskell :: [a] -> List a
 listFromHaskell [] = Void
 listFromHaskell (x:xs) = Cons x (listFromHaskell xs)
-
-
-
-
-
-
-
-
-
-
-
-
 
 --------------------------------------------------------------------------------
 --------                             PRUEBAS                            --------

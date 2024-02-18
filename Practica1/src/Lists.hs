@@ -52,19 +52,20 @@ myLen = listLength
 
 -- | isElem. Función que nos dice si un elemento está en una lista.
 isElem :: (Eq a) => List a -> a -> Bool
-isElem = error "D:"
+isElem Void _        = False
+isElem (Cons x xs) e = x == e || isElem xs e
 
 -- | myReverse. Función que regresa la reversa de una lista.
 myReverse :: List a -> List a
-myReverse = error "D:"
+myReverse = listReverse
 
 -- | toHaskell. Función que pasa una de nuestras listas a las listas de haskell.
 toHaskell :: List a -> [a]
-toHaskell = error "D:"
+toHaskell = listToHaskell
 
 -- | fromHaskell. Función que pasa una lista de haskell a nuestras listas.
 fromHaskell :: [a] -> List a
-fromHaskell = error "D:"
+fromHaskell = listFromHaskell
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------
@@ -80,6 +81,26 @@ listLast (Cons _ t)    = listLast t
 listLength :: List a -> Int
 listLength Void = 0
 listLength (Cons _ t) = 1 + listLength t
+
+-- | función auxiliar que regresa la misma lista en reversa
+listReverse :: List a -> List a
+listReverse list = listReverse' list Void
+  where
+    listReverse' Void acc = acc
+    listReverse' (Cons x xs) acc = listReverse' xs (Cons x acc)
+
+-- | función auxiliar que pasa de una de nuestras listas a una de Haskell
+listToHaskell :: List a -> [a]
+listToHaskell Void = []
+listToHaskell (Cons x xs) = x : listToHaskell xs
+
+-- | función auxiliar que pasa de una lista de Haskell a una de nuestras listas 
+listFromHaskell :: [a] -> List a
+listFromHaskell [] = Void
+listFromHaskell (x:xs) = Cons x (listFromHaskell xs)
+
+
+
 
 
 

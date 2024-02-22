@@ -8,7 +8,8 @@
 - Practica 1: Recordando Haskell. Árboles
 - Integrantes:
 - Reyes Medina Santiago Iván
--
+- López Espinoza Ashley Yael
+- Islas Espino Julio Cesar
 -}
 
 module Trees where
